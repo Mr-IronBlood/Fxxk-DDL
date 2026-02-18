@@ -1,0 +1,133 @@
+﻿<Window x:Class="FxxkDDL.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="{Binding WindowTitle}"
+        Height="600" Width="1000"
+        WindowStartupLocation="CenterScreen">
+
+    <Grid>
+        <!-- 两列布局 -->
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <!-- 左侧导航 -->
+            <ColumnDefinition Width="*"/>
+            <!-- 右侧内容 -->
+        </Grid.ColumnDefinitions>
+
+        <!-- ===== 左侧导航栏 ===== -->
+        <Border Grid.Column="0" Background="#2C3E50">
+            <StackPanel Margin="10">
+                <!-- 应用Logo -->
+                <StackPanel Margin="0,30,0,40" HorizontalAlignment="Center">
+                    <TextBlock Text="📅" 
+                               FontSize="40" 
+                               Foreground="White" 
+                               HorizontalAlignment="Center"/>
+                    <TextBlock Text="DDL Solver" 
+                               Foreground="White" 
+                               FontSize="16" 
+                               FontWeight="Bold"
+                               HorizontalAlignment="Center"
+                               Margin="0,10,0,0"/>
+                </StackPanel>
+
+                <!-- 导航按钮 -->
+                <Button x:Name="BtnInput"
+                        Content="📝 输入页面"
+                        Margin="0,10"
+                        Height="45"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        Foreground="White"
+                        FontSize="14"
+                        HorizontalAlignment="Stretch"
+                        Command="{Binding NavigateToInputCommand}">
+                </Button>
+
+                <Button x:Name="BtnCalendar"
+                        Content="📅 日历页面"
+                        Margin="0,10"
+                        Height="45"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        Foreground="White"
+                        FontSize="14"
+                        HorizontalAlignment="Stretch"
+                        Command="{Binding NavigateToCalendarCommand}">
+                </Button>
+
+                <Button x:Name="BtnTasks"
+                        Content="✅ 任务页面"
+                        Margin="0,10"
+                        Height="45"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        Foreground="White"
+                        FontSize="14"
+                        HorizontalAlignment="Stretch"
+                        Command="{Binding NavigateToTasksCommand}">
+                </Button>
+
+                <!-- 空白填充 -->
+                <StackPanel Height="10"/>
+                <Button x:Name="BtnSettings"
+                        Content="⚙️ 设置"
+                        Height="40"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        Foreground="White"
+                        FontSize="13"
+                        Command="{Binding NavigateToSettingsCommand}"
+                        />
+
+                <!-- 设置按钮 -->
+            </StackPanel>
+        </Border>
+
+        <!-- ===== 右侧内容区 ===== -->
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="60"/>
+                <!-- 标题栏 -->
+                <RowDefinition Height="*"/>
+                <!-- 内容区 -->
+                <RowDefinition Height="35"/>
+                <!-- 状态栏 -->
+            </Grid.RowDefinitions>
+
+            <!-- 顶部标题栏 -->
+            <Border Grid.Row="0" Background="#3498DB">
+                <TextBlock x:Name="TitleText"
+                          Text="{Binding WindowTitle}"
+                          Foreground="White"
+                          FontSize="18"
+                          FontWeight="Bold"
+                          VerticalAlignment="Center"
+                          Margin="25,0"/>
+            </Border>
+
+            <!-- 主要内容区域 -->
+            <Border Grid.Row="1" Background="White">
+                <ContentControl x:Name="ContentArea" Content="{Binding CurrentContent}"/>
+            </Border>
+
+            <!-- 底部状态栏 -->
+            <Border Grid.Row="2" Background="#ECF0F1">
+                <Grid>
+                    <TextBlock x:Name="StatusText"
+                              Text="{Binding StatusMessage}"
+                              VerticalAlignment="Center"
+                              Margin="15,0"
+                              Foreground="#2C3E50"/>
+
+                    <TextBlock x:Name="TimeText"
+                              Text="{Binding CurrentTime}"
+                              HorizontalAlignment="Right"
+                              VerticalAlignment="Center"
+                              Margin="0,0,15,0"
+                              Foreground="#2C3E50"/>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>

@@ -1,0 +1,16 @@
+﻿<Application x:Class="FxxkDDL.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:FxxkDDL"
+             StartupUri="MainWindow.xaml">
+
+    <Application.Resources>
+        <!-- 布尔值到可见性转换器 -->
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+
+        <!-- 布尔值反转转换器 -->
+        <local:InverseBoolConverter x:Key="InverseBoolConverter"/>
+
+        <!-- 其他样式... -->
+    </Application.Resources>
+</Application>
