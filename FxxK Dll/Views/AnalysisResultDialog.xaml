@@ -1,0 +1,266 @@
+<Window x:Class="FxxkDDL.Views.AnalysisResultDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:FxxkDDL.Views"
+        mc:Ignorable="d"
+        Title="分析结果"
+        Height="500"
+        Width="600"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        WindowStyle="SingleBorderWindow"
+        Background="#F8F9FA">
+
+    <Window.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Segoe UI, Microsoft YaHei"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="FontFamily" Value="Segoe UI, Microsoft YaHei"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Padding" Value="15,8"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="4">
+                            <Border.Effect>
+                                <DropShadowEffect ShadowDepth="0" Opacity="0.2" BlurRadius="4" Color="#2C3E50"/>
+                            </Border.Effect>
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#2980B9"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- 顶部标题栏 -->
+        <Border Grid.Row="0"
+                Background="#3498DB"
+                Padding="20,15">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- 图标 -->
+                <TextBlock Grid.Column="0"
+                           Text="📊"
+                           FontSize="24"
+                           VerticalAlignment="Center"
+                           Margin="0,0,15,0"/>
+
+                <!-- 标题 -->
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <TextBlock Text="DDL分析结果"
+                               FontSize="18"
+                               FontWeight="Bold"
+                               Foreground="White"/>
+                    <TextBlock Text="DeepSeek AI智能提取的截止日期任务"
+                               FontSize="12"
+                               Foreground="#E8F4FD"
+                               Margin="0,2,0,0"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- 主内容区域 -->
+        <Border Grid.Row="1"
+                Margin="20,15,20,15"
+                Background="White"
+                CornerRadius="8"
+                BorderBrush="#E0E6ED"
+                BorderThickness="1">
+            <Border.Effect>
+                <DropShadowEffect ShadowDepth="0" Opacity="0.15" BlurRadius="12" Color="#2C3E50"/>
+            </Border.Effect>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- 统计信息 -->
+                <Border Grid.Row="0"
+                        Background="#E8F4FD"
+                        CornerRadius="6"
+                        Margin="15,15,15,10"
+                        Padding="15,12"
+                        BorderBrush="#3498DB"
+                        BorderThickness="1">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0"
+                                   Text="📈"
+                                   FontSize="20"
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,10,0"/>
+
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <TextBlock x:Name="ResultTitle"
+                                       Text="✅ 分析成功"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       Foreground="#2C3E50"/>
+                            <TextBlock x:Name="ResultMessage"
+                                       Text="成功提取到 0 个DDL任务"
+                                       FontSize="12"
+                                       Foreground="#3498DB"
+                                       Margin="0,2,0,0"/>
+                        </StackPanel>
+
+                        <Border Grid.Column="2"
+                                Background="#3498DB"
+                                CornerRadius="12"
+                                Padding="8,4"
+                                VerticalAlignment="Center">
+                            <TextBlock x:Name="TaskCount"
+                                       Text="0"
+                                       FontSize="12"
+                                       FontWeight="Bold"
+                                       Foreground="White"/>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <!-- 任务列表 -->
+                <ScrollViewer Grid.Row="1"
+                              VerticalScrollBarVisibility="Auto"
+                              Margin="15,0,15,15">
+                    <ItemsControl x:Name="TasksItemsControl">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="#F8F9FA"
+                                        CornerRadius="6"
+                                        Margin="0,0,0,10"
+                                        Padding="15"
+                                        BorderBrush="#D5DBDB"
+                                        BorderThickness="1">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <!-- 任务描述 -->
+                                        <TextBlock Grid.Row="0"
+                                                   Text="{Binding Description}"
+                                                   FontSize="13"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="#2C3E50"
+                                                   TextWrapping="Wrap"
+                                                   Margin="0,0,0,8"/>
+
+                                        <!-- 截止时间 -->
+                                        <StackPanel Grid.Row="1"
+                                                    Orientation="Horizontal"
+                                                    Margin="0,0,0,5">
+                                            <TextBlock Text="⏰"
+                                                       FontSize="12"
+                                                       Foreground="#7F8C8D"
+                                                       Margin="0,0,6,0"/>
+                                            <TextBlock Text="{Binding DeadlineText}"
+                                                       FontSize="12"
+                                                       Foreground="#2C3E50"/>
+                                        </StackPanel>
+
+                                        <!-- 重要度 -->
+                                        <StackPanel Grid.Row="2"
+                                                    Orientation="Horizontal">
+                                            <TextBlock Text="⚡"
+                                                       FontSize="12"
+                                                       Foreground="#7F8C8D"
+                                                       Margin="0,0,6,0"/>
+                                            <Border Background="{Binding ImportanceColor}"
+                                                    CornerRadius="3"
+                                                    Padding="6,2">
+                                                <TextBlock Text="{Binding Importance}"
+                                                           FontSize="11"
+                                                           FontWeight="SemiBold"
+                                                           Foreground="White"/>
+                                            </Border>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+
+                <!-- 底部提示 -->
+                <Border Grid.Row="2"
+                        Background="#F8F9FA"
+                        CornerRadius="4"
+                        Margin="15,0,15,15"
+                        Padding="10,8"
+                        BorderBrush="#D5DBDB"
+                        BorderThickness="1">
+                    <TextBlock Text="✅ 所有任务已自动保存到数据库中"
+                               FontSize="11"
+                               Foreground="#5D6D7E"
+                               HorizontalAlignment="Center"/>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- 底部按钮 -->
+        <Border Grid.Row="2"
+                Background="#ECF0F1"
+                Padding="20,15">
+            <Border.Effect>
+                <DropShadowEffect ShadowDepth="0" Opacity="0.1" BlurRadius="8" Color="#2C3E50"/>
+            </Border.Effect>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- 左侧提示 -->
+                <TextBlock Grid.Column="0"
+                           Text="可在任务管理页面查看和编辑这些任务"
+                           FontSize="11"
+                           Foreground="#7F8C8D"
+                           VerticalAlignment="Center"/>
+
+                <!-- 关闭按钮 -->
+                <Button Grid.Column="1"
+                        Content="关闭"
+                        Background="#3498DB"
+                        Foreground="White"
+                        FontWeight="SemiBold"
+                        Click="CloseButton_Click"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

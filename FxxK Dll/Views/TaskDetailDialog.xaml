@@ -1,0 +1,321 @@
+<Window x:Class="FxxkDDL.Views.TaskDetailDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="任务详情"
+        Height="600" Width="700"
+        WindowStartupLocation="CenterOwner"
+        Background="#F8F9FA"
+        ResizeMode="CanResize">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- 标题栏 -->
+        <Border Grid.Row="0" Background="#2C3E50" CornerRadius="8" Padding="20" Margin="0,0,0,15">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0">
+                    <TextBlock x:Name="TxtTaskTitle"
+                               Text="任务名称"
+                               FontSize="20"
+                               FontWeight="Bold"
+                               Foreground="White"
+                               TextWrapping="Wrap"/>
+
+                    <TextBlock x:Name="TxtTaskDeadline"
+                               Text="截止时间"
+                               FontSize="13"
+                               Foreground="#BDC3C7"
+                               Margin="0,5,0,0"/>
+                </StackPanel>
+
+                <Border Grid.Column="1" Background="{Binding ImportanceColor}" CornerRadius="20" Padding="12,6">
+                    <TextBlock x:Name="TxtTaskImportance"
+                               Text="高"
+                               FontSize="14"
+                               FontWeight="Bold"
+                               Foreground="White"/>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- 内容区域 -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+
+                <!-- 任务描述 -->
+                <Border Background="White" CornerRadius="6" Margin="0,0,0,10">
+                    <StackPanel Margin="20">
+                        <TextBlock Text="任务名称"
+                                   FontSize="12"
+                                   FontWeight="Bold"
+                                   Foreground="#7F8C8D"
+                                   Margin="0,0,0,8"/>
+                        <TextBlock x:Name="TxtTaskName"
+                                   Text="任务名称"
+                                   FontSize="16"
+                                   FontWeight="Bold"
+                                   Foreground="#2C3E50"
+                                   TextWrapping="Wrap"
+                                   LineHeight="24"
+                                   Margin="0,0,0,12"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 任务详情 -->
+                <Border Background="White" CornerRadius="6" Margin="0,0,0,10">
+                    <StackPanel Margin="20">
+                        <TextBlock Text="任务详情"
+                                   FontSize="12"
+                                   FontWeight="Bold"
+                                   Foreground="#7F8C8D"
+                                   Margin="0,0,0,8"/>
+                        <TextBlock x:Name="TxtTaskDetail"
+                                   Text="任务详细描述"
+                                   FontSize="14"
+                                   Foreground="#2C3E50"
+                                   TextWrapping="Wrap"
+                                   LineHeight="22"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 原文内容 -->
+                <Border Background="White" CornerRadius="6" Padding="20" Margin="0,0,0,10">
+                    <StackPanel>
+                        <TextBlock Text="原文内容"
+                                   FontSize="12"
+                                   FontWeight="Bold"
+                                   Foreground="#7F8C8D"
+                                   Margin="0,0,0,8"/>
+                        <Border Background="#FFF8E1" CornerRadius="4" Padding="15">
+                            <ScrollViewer MaxHeight="200" VerticalScrollBarVisibility="Auto">
+                                <TextBlock x:Name="TxtOriginalText"
+                                           Text="原文内容"
+                                           FontSize="12"
+                                           Foreground="#5D4037"
+                                           TextWrapping="Wrap"
+                                           LineHeight="18"/>
+                            </ScrollViewer>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <!-- 任务关系 -->
+                <Border Background="White" CornerRadius="6" Padding="20" Margin="0,0,0,10">
+                    <StackPanel>
+                        <TextBlock Text="任务关系"
+                                   FontSize="12"
+                                   FontWeight="Bold"
+                                   Foreground="#7F8C8D"
+                                   Margin="0,0,0,12"/>
+
+                        <!-- 父任务 -->
+                        <StackPanel Margin="0,0,0,15" Visibility="{Binding HasParentTask, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                <TextBlock Text="📌 父任务"
+                                           FontSize="13"
+                                           FontWeight="Bold"
+                                           Foreground="#E67E22"
+                                           Margin="0,0,8,0"/>
+                                <TextBlock x:Name="TxtParentTask"
+                                           Text="父任务名称"
+                                           FontSize="13"
+                                           Foreground="#2C3E50"
+                                           FontWeight="SemiBold"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!-- 子任务 -->
+                        <StackPanel Margin="0,0,0,15" Visibility="{Binding HasSubTasks, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <TextBlock Text="📋 子任务"
+                                       FontSize="13"
+                                       FontWeight="Bold"
+                                       Foreground="#3498DB"
+                                       Margin="0,0,0,8"/>
+                            <ItemsControl x:Name="LstSubTasks">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Background="#F8F9FA" CornerRadius="4" Padding="12,8" Margin="0,0,0,6">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <CheckBox Grid.Column="0"
+                                                          IsChecked="{Binding IsCompleted}"
+                                                          Margin="0,0,10,0"
+                                                          VerticalAlignment="Center"
+                                                          IsEnabled="False"/>
+
+                                                <TextBlock Grid.Column="1"
+                                                           Text="{Binding Description}"
+                                                           FontSize="13"
+                                                           Foreground="#2C3E50"
+                                                           TextWrapping="Wrap"
+                                                           VerticalAlignment="Center"
+                                                           Margin="0,0,10,0"/>
+
+                                                <Border Grid.Column="2" Background="{Binding ImportanceColor}" CornerRadius="10" Padding="6,3">
+                                                    <TextBlock Text="{Binding Importance}"
+                                                               FontSize="10"
+                                                               FontWeight="Bold"
+                                                               Foreground="White"/>
+                                                </Border>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+
+                        <!-- 依赖任务 -->
+                        <StackPanel Visibility="{Binding HasDependencies, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <TextBlock Text="🔗 依赖任务"
+                                       FontSize="13"
+                                       FontWeight="Bold"
+                                       Foreground="#9B59B6"
+                                       Margin="0,0,0,8"/>
+                            <ItemsControl x:Name="LstDependencies">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Background="#F8F9FA" CornerRadius="4" Padding="12,8" Margin="0,0,0,6">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <TextBlock Grid.Column="0"
+                                                           Text="{Binding Description}"
+                                                           FontSize="13"
+                                                           Foreground="#2C3E50"
+                                                           TextWrapping="Wrap"
+                                                           VerticalAlignment="Center"
+                                                           Margin="0,0,10,0"/>
+
+                                                <Border Grid.Column="1" Background="{Binding ImportanceColor}" CornerRadius="10" Padding="6,3">
+                                                    <TextBlock Text="{Binding Importance}"
+                                                               FontSize="10"
+                                                               FontWeight="Bold"
+                                                               Foreground="White"/>
+                                                </Border>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+
+                        <!-- 无关系提示 -->
+                        <TextBlock Text="此任务没有关联的其他任务"
+                                   FontSize="13"
+                                   Foreground="#95A5A6"
+                                   FontStyle="Italic"
+                                   Visibility="{Binding HasAnyRelations, Converter={StaticResource InverseBoolConverter}}"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 任务信息 -->
+                <Border Background="White" CornerRadius="6" Padding="20" Margin="0,0,0,10">
+                    <StackPanel>
+                        <TextBlock Text="任务信息"
+                                   FontSize="12"
+                                   FontWeight="Bold"
+                                   Foreground="#7F8C8D"
+                                   Margin="0,0,0,12"/>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0" Text="创建时间"
+                                       FontSize="13"
+                                       Foreground="#7F8C8D"
+                                       VerticalAlignment="Top"/>
+
+                            <TextBlock Grid.Column="1"
+                                       x:Name="TxtCreatedAt"
+                                       Text="2026-02-14 10:30:00"
+                                       FontSize="13"
+                                       Foreground="#2C3E50"
+                                       VerticalAlignment="Top"
+                                       Margin="0,0,0,8"/>
+
+                            <TextBlock Grid.Column="0" Grid.Row="1" Text="完成时间"
+                                       FontSize="13"
+                                       Foreground="#7F8C8D"
+                                       VerticalAlignment="Top"
+                                       Margin="0,8,0,0"/>
+
+                            <TextBlock Grid.Column="1" Grid.Row="1"
+                                       x:Name="TxtCompletedAt"
+                                       Text="未完成"
+                                       FontSize="13"
+                                       Foreground="#2C3E50"
+                                       VerticalAlignment="Top"
+                                       Margin="0,8,0,0"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- 底部按钮 -->
+        <Border Grid.Row="2" Background="White" CornerRadius="6" Padding="20,15" Margin="0,15,0,0">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button x:Name="BtnDeleteTask"
+                        Content="🗑️ 删除任务"
+                        Padding="15,8"
+                        Margin="0,0,10,0"
+                        Background="#E74C3C"
+                        Foreground="White"
+                        FontWeight="SemiBold"
+                        Cursor="Hand"
+                        Click="BtnDeleteTask_Click"/>
+
+                <Button x:Name="BtnManageRelations"
+                        Content="🔗 管理关系"
+                        Padding="15,8"
+                        Margin="0,0,10,0"
+                        Background="#9B59B6"
+                        Foreground="White"
+                        FontWeight="SemiBold"
+                        Cursor="Hand"
+                        Click="BtnManageRelations_Click"/>
+
+                <Button x:Name="BtnEditTask"
+                        Content="✏️ 编辑任务"
+                        Padding="15,8"
+                        Margin="0,0,10,0"
+                        Background="#3498DB"
+                        Foreground="White"
+                        FontWeight="SemiBold"
+                        Cursor="Hand"
+                        Click="BtnEditTask_Click"/>
+
+                <Button x:Name="BtnClose"
+                        Content="关闭"
+                        Padding="15,8"
+                        Background="#ECF0F1"
+                        Foreground="#2C3E50"
+                        FontWeight="SemiBold"
+                        Cursor="Hand"
+                        Click="BtnClose_Click"/>
+            </StackPanel>
+        </Border>
+
+    </Grid>
+</Window>
