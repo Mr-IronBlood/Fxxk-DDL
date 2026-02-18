@@ -139,10 +139,10 @@ A: 目前支持纯文本格式，其他文件格式（PDF、Word、PPT）正在�
 
 ## 关于名字 
 
--这个项目一开始叫做Fxxk DDL，但是我在第一次打字的时候打错了QAQ
--变成DLL力QAQ
--后来为了听起来好点更名为DDL Solver
--等后续再改名改回为Fxxk DDL
+- 这个项目一开始叫做Fxxk DDL，但是我在第一次打字的时候打错了QAQ
+- 变成DLL力QAQ
+- 后来为了听起来好点更名为DDL Solver
+- 等后续再改名改回为Fxxk DDL
 
 ---
 
