@@ -136,13 +136,14 @@ A: 目前支持纯文本格式，其他文件格式（PDF、Word、PPT）正在�
 ## 联系方式
 
 - GitHub Issues: [提交问题](https://github.com/Mr-IronBlood/Fxxk-DDL/issues)
----
-## 关于名字
+
+## 关于名字 
 
 这个项目一开始叫做Fxxk DDL，但是我在第一次打字的时候打错了TAT
 变成DLL力TAT
 后来为了听起来好点更名为DDL Solver
 等后续再改名改回为Fxxk DDL
+
 ---
 
 如果这个项目对你有帮助，请给个 Star ⭐
