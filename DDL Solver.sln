@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36511.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDL Solver", "FxxK Dll\DDL Solver.csproj", "{198F4154-B660-4678-90D1-E66DEE506687}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{198F4154-B660-4678-90D1-E66DEE506687}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{198F4154-B660-4678-90D1-E66DEE506687}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{198F4154-B660-4678-90D1-E66DEE506687}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{198F4154-B660-4678-90D1-E66DEE506687}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FDC57859-FB5E-4582-82F4-27D02193311F}
+	EndGlobalSection
+EndGlobal
