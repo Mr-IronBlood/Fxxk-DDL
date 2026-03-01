@@ -43,8 +43,45 @@
                 <TextBlock Text="{Binding Importance}" FontSize="11" FontWeight="Bold" Foreground="White"/>
             </Border>
         </DataTemplate>
+
+        <!-- FAB 浮动按钮样式 -->
+        <Style x:Key="FABButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#3498DB"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Normal"/>
+            <Setter Property="Width" Value="42"/>
+            <Setter Property="Height" Value="42"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid>
+                            <!-- 多层阴影增强立体感 -->
+                            <Ellipse Fill="{TemplateBinding Background}" Width="42" Height="42">
+                                <Ellipse.Effect>
+                                    <DropShadowEffect Color="Black" Opacity="0.5" BlurRadius="12" ShadowDepth="6" Direction="270"/>
+                                </Ellipse.Effect>
+                            </Ellipse>
+                            <!-- 内层阴影增强层次 -->
+                            <Ellipse Stroke="#1A5276" StrokeThickness="2" Width="42" Height="42" Opacity="0.4"/>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-1,0,0"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#2980B9"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#21618C"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
 
+    <!-- 外层 Grid 用于承载 FAB 按钮 -->
     <Grid Background="#F8F9FA">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -620,5 +657,15 @@
                 </Border>
             </Grid>
         </ScrollViewer>
+
+        <!-- FAB 浮动添加按钮 - 放在外层 Grid 内，浮动在整个页面右下角 -->
+        <Button x:Name="BtnAddTask"
+                Content="➕"
+                Style="{StaticResource FABButtonStyle}"
+                Grid.RowSpan="3"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Margin="20"
+                Click="BtnAddTask_Click"/>
     </Grid>
 </UserControl>

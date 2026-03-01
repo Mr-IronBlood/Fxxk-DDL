@@ -865,7 +865,7 @@ namespace FxxkDDL.Views
                             Task = ev.Task,
                             Event = ev,
                             DayIndex = i,
-                            TaskDate = date,
+                            TaskDate = ev.Date,  // 使用事件的日期（任务截止日期）而不是列的日期
                             TodayIndex = todayIndex
                         });
                     }
@@ -1052,10 +1052,14 @@ namespace FxxkDDL.Views
                     }
 
                     // 绘制拖尾条带
-                    if (taskInfo.TodayIndex >= 0 && taskInfo.DayIndex != taskInfo.TodayIndex)
+                    // 只有当任务不在今天列时才绘制拖尾
+                    bool shouldDrawTrail = taskInfo.TodayIndex >= 0 && taskInfo.DayIndex != taskInfo.TodayIndex;
+
+                    if (shouldDrawTrail)
                     {
                         // 计算边框右侧位置，使拖尾与边框右侧竖线连接
                         double taskBorderRightX = taskColumnX + boxWidth;
+
                         DrawTrailStrip(taskBorderRightX, todayColumnX, yPosition, trailHeight, trailColor, taskInfo.DayIndex > taskInfo.TodayIndex, taskInfo);
                     }
 
@@ -1072,6 +1076,7 @@ namespace FxxkDDL.Views
         // 绘制荧光拖尾条带
         // taskX: 任务竖线的右边界X坐标（已经是正确的位置，不要再加boxWidth）
         // todayX: 今天列的右边界X坐标（已经是正确的位置，不要再加boxWidth）
+        // isOnLeftmostColumn: 任务是否在最左侧列（最左侧列的任务使用纯色拖尾）
         private void DrawTrailStrip(double taskX, double todayX, double y, double height, Color color, bool isFuture, TaskTrailInfo taskInfo = null)
         {
             const double borderWidth = 24; // 竖线宽度

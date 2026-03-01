@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Effects;
 
 namespace FxxkDDL.Views
 {
@@ -369,6 +370,43 @@ namespace FxxkDDL.Views
             catch (Exception ex)
             {
                 MessageBox.Show($"更新任务状态失败: {ex.Message}", "错误",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        /// <summary>
+        /// FAB 添加按钮点击事件
+        /// </summary>
+        private void BtnAddTask_Click(object sender, RoutedEventArgs e)
+        {
+            ShowAddTaskDialog();
+        }
+
+        /// <summary>
+        /// 显示添加任务对话框
+        /// </summary>
+        private void ShowAddTaskDialog()
+        {
+            try
+            {
+                var addDialog = new AddTaskDialog
+                {
+                    Owner = Window.GetWindow(this)
+                };
+
+                // 订阅任务创建事件
+                addDialog.OnTaskCreated += (task) =>
+                {
+                    // 刷新任务列表
+                    var viewModel = DataContext as Core.ViewModels.TasksViewModel;
+                    viewModel?.Refresh();
+                };
+
+                addDialog.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"打开添加任务对话框失败: {ex.Message}", "错误",
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }

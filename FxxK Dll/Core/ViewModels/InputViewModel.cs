@@ -343,6 +343,9 @@ namespace FxxkDDL.Core.ViewModels
                 IsAnalyzing = true;
                 ((RelayCommand)AnalyzeCommand).RaiseCanExecuteChanged();
 
+                // 记录开始时间
+                var startTime = DateTime.Now;
+
                 try
                 {
                     // 根据是否有选择文件决定分析方式
@@ -361,15 +364,19 @@ namespace FxxkDDL.Core.ViewModels
                         result = await _deepSeekService.ExtractDDLFromTextAsync(ChatText);
                     }
 
+                    // 计算耗时
+                    var elapsed = DateTime.Now - startTime;
+                    double elapsedSeconds = elapsed.TotalSeconds;
+
                     if (!result.Success)
                     {
                         FileUploadStatus = $"❌ 分析失败: {result.Message}";
                         SetError($"分析失败: {result.Message}");
 
-                        // 显示失败消息框
+                        // 显示失败消息框（包含耗时）
                         System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
                         {
-                            System.Windows.MessageBox.Show($"分析失败:\n{result.Message}",
+                            System.Windows.MessageBox.Show($"分析失败 (耗时 {elapsedSeconds:F1}秒):\n{result.Message}",
                                 "分析结果",
                                 System.Windows.MessageBoxButton.OK,
                                 System.Windows.MessageBoxImage.Warning);
@@ -382,10 +389,10 @@ namespace FxxkDDL.Core.ViewModels
                         FileUploadStatus = "⚠️ 分析完成，但未能提取到明确的DDL任务";
                         SetError("分析完成，但未能提取到明确的DDL任务");
 
-                        // 显示未提取到任务的消息框
+                        // 显示未提取到任务的消息框（包含耗时）
                         System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
                         {
-                            System.Windows.MessageBox.Show("分析完成，但未能提取到明确的DDL任务",
+                            System.Windows.MessageBox.Show($"分析完成 (耗时 {elapsedSeconds:F1}秒)，但未能提取到明确的DDL任务",
                                 "分析结果",
                                 System.Windows.MessageBoxButton.OK,
                                 System.Windows.MessageBoxImage.Information);
@@ -396,10 +403,10 @@ namespace FxxkDDL.Core.ViewModels
                     // 保存任务到数据库
                     SaveTasksToDatabase(result.Tasks);
 
-                    // 显示成功消息框
+                    // 显示成功消息框（包含耗时）
                     System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
                     {
-                        System.Windows.MessageBox.Show($"成功提取到 {result.Tasks.Count} 个任务!",
+                        System.Windows.MessageBox.Show($"成功提取到 {result.Tasks.Count} 个任务!\n\n⏱️ 分析耗时: {elapsedSeconds:F1}秒",
                             "分析成功",
                             System.Windows.MessageBoxButton.OK,
                             System.Windows.MessageBoxImage.Information);

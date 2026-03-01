@@ -4,7 +4,7 @@
     {
         // API 配置
         public string DeepSeekApiKey { get; set; } = "";
-        public string Model { get; set; } = "deepseek-chat";
+        public string Model { get; set; } = "deepseek-reasoner";
 
         // 分析设置
         public int MaxTokens { get; set; } = 1000;

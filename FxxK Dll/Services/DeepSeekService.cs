@@ -20,7 +20,7 @@ namespace FxxkDDL.Services
         public DeepSeekService()
         {
             _httpClient = new HttpClient();
-            _httpClient.Timeout = TimeSpan.FromSeconds(30);
+            _httpClient.Timeout = TimeSpan.FromMinutes(5); // 5分钟超时，适配 deepseek-reasoner 高性能模型
             _configService = new ConfigService();
         }
 
@@ -41,7 +41,7 @@ namespace FxxkDDL.Services
                 // 发送一个简单的测试请求
                 var testRequest = new
                 {
-                    model = "deepseek-chat",
+                    model = "deepseek-reasoner",
                     messages = new[]
                     {
                         new { role = "user", content = "测试连接，请回复'连接成功'" }

@@ -120,7 +120,13 @@ namespace FxxkDDL.Views
             BtnTestApiKey.Content = "测试连接";
 
             // 显示结果
-            MessageBox.Show(result.Message,
+            string message = result.Message;
+            if (result.Success)
+            {
+                message += "\n\n⚠️ 请重启软件以确保新配置生效！";
+            }
+
+            MessageBox.Show(message,
                           result.Success ? "连接测试成功" : "连接测试失败",
                           MessageBoxButton.OK,
                           result.Success ? MessageBoxImage.Information : MessageBoxImage.Error);
