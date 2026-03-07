@@ -1052,15 +1052,18 @@ namespace FxxkDDL.Views
                     }
 
                     // 绘制拖尾条带
-                    // 只有当任务不在今天列时才绘制拖尾
-                    bool shouldDrawTrail = taskInfo.TodayIndex >= 0 && taskInfo.DayIndex != taskInfo.TodayIndex;
+                    // 无论任务在哪一天，都绘制拖尾，拖尾始终向左延伸到 X=0（第0列的左边界）
+                    bool shouldDrawTrail = true;
 
                     if (shouldDrawTrail)
                     {
                         // 计算边框右侧位置，使拖尾与边框右侧竖线连接
                         double taskBorderRightX = taskColumnX + boxWidth;
 
-                        DrawTrailStrip(taskBorderRightX, todayColumnX, yPosition, trailHeight, trailColor, taskInfo.DayIndex > taskInfo.TodayIndex, taskInfo);
+                        // 拖尾目标始终是 X=0（第0列的左边界）
+                        double trailTargetX = 0;
+
+                        DrawTrailStrip(taskBorderRightX, trailTargetX, yPosition, trailHeight, trailColor, false, taskInfo, taskColumnX);
                     }
 
                     // 绘制任务所在日期的圆角矩形
@@ -1074,10 +1077,10 @@ namespace FxxkDDL.Views
         }
 
         // 绘制荧光拖尾条带
-        // taskX: 任务竖线的右边界X坐标（已经是正确的位置，不要再加boxWidth）
-        // todayX: 今天列的右边界X坐标（已经是正确的位置，不要再加boxWidth）
-        // isOnLeftmostColumn: 任务是否在最左侧列（最左侧列的任务使用纯色拖尾）
-        private void DrawTrailStrip(double taskX, double todayX, double y, double height, Color color, bool isFuture, TaskTrailInfo taskInfo = null)
+        // taskX: 任务竖线的右边界X坐标
+        // todayX: 目标位置X坐标
+        // taskColumnX: 任务列的左边界X坐标（用于文字定位）
+        private void DrawTrailStrip(double taskX, double todayX, double y, double height, Color color, bool isFuture, TaskTrailInfo taskInfo = null, double taskColumnX = 0)
         {
             const double borderWidth = 24; // 竖线宽度
             double cornerRadius = height / 4; // 圆角半径
@@ -1117,10 +1120,10 @@ namespace FxxkDDL.Views
             }
             else
             {
-                // 过去任务：从任务（不透明，Alpha=255）→ 今天（透明，Alpha=0）
-                gradientBrush.GradientStops.Add(new GradientStop(Color.FromArgb((byte)255, color.R, color.G, color.B), 0.0));   // 任务端：完全不透明
+                // 过去任务：从左侧（透明，Alpha=0）→ 任务（不透明，Alpha=255）
+                gradientBrush.GradientStops.Add(new GradientStop(Color.FromArgb((byte)0, color.R, color.G, color.B), 0.0));     // 左侧（最左端）：完全透明
                 gradientBrush.GradientStops.Add(new GradientStop(Color.FromArgb((byte)100, color.R, color.G, color.B), 0.5)); // 中间：半透明
-                gradientBrush.GradientStops.Add(new GradientStop(Color.FromArgb((byte)0, color.R, color.G, color.B), 1.0));     // 今天端：完全透明
+                gradientBrush.GradientStops.Add(new GradientStop(Color.FromArgb((byte)255, color.R, color.G, color.B), 1.0));   // 右侧（任务端）：完全不透明
             }
 
             // 创建拖尾Border - 只有右侧圆角（任务端），左侧是平的
@@ -1144,7 +1147,7 @@ namespace FxxkDDL.Views
                 ShadowDepth = 0
             };
 
-            Canvas.SetLeft(trailBorder, startX);
+            Canvas.SetLeft(trailBorder, Math.Min(startX, endX));
             Canvas.SetTop(trailBorder, y);
             TaskTrailCanvas.Children.Add(trailBorder);
 
@@ -1168,17 +1171,8 @@ namespace FxxkDDL.Views
                     var scaleTransform = new ScaleTransform(1.05, 1.05);
                     trailBorder.RenderTransform = scaleTransform;
 
-                    // 根据拖尾方向设置变换原点
-                    if (isFuture)
-                    {
-                        // 未来任务：从左到右，以右端（任务端）为缩放中心
-                        trailBorder.RenderTransformOrigin = new Point(1, 0.5);
-                    }
-                    else
-                    {
-                        // 过去任务：从右到左，以右端（任务端）为缩放中心
-                        trailBorder.RenderTransformOrigin = new Point(0, 0.5);
-                    }
+                    // 根据拖尾方向设置变换原点（始终以任务端/右侧为缩放中心）
+            trailBorder.RenderTransformOrigin = new Point(1, 0.5);
 
                     HighlightTaskBorder(taskInfo, true);
                 }
@@ -1281,8 +1275,8 @@ namespace FxxkDDL.Views
                 container.Children.Add(taskText);
                 container.Children.Add(timeCheckBoxContainer);
 
-                // 计算容器位置（文字显示在拖尾的任务端，靠近竖线）
-                double textX = isFuture ? endX - 120 : startX + 5;
+                // 计算容器位置（文字显示在任务列内，靠近左边界）
+                double textX = taskColumnX + 5;
 
                 Canvas.SetLeft(container, textX);
                 Canvas.SetTop(container, y + height / 2 - 15);
@@ -1410,6 +1404,40 @@ namespace FxxkDDL.Views
             }
         }
 
+        // 高亮任务拖尾
+        private void HighlightTaskTrail(TaskTrailInfo taskInfo, bool highlight)
+        {
+            if (taskInfo == null) return;
+
+            // 在TaskTrailCanvas中查找对应的拖尾Border
+            foreach (var child in TaskTrailCanvas.Children)
+            {
+                if (child is Border trailBorder && trailBorder.Tag is TaskTrailInfo trailInfo &&
+                    trailInfo == taskInfo)
+                {
+                    if (highlight)
+                    {
+                        // 将拖尾置顶
+                        Canvas.SetZIndex(trailBorder, 1000);
+
+                        // 拖尾悬停变大效果
+                        var scaleTransform = new ScaleTransform(1.05, 1.05);
+                        trailBorder.RenderTransform = scaleTransform;
+                        trailBorder.RenderTransformOrigin = new Point(1, 0.5);
+                    }
+                    else
+                    {
+                        // 恢复拖尾ZIndex
+                        Canvas.SetZIndex(trailBorder, 0);
+
+                        // 恢复原始大小
+                        trailBorder.RenderTransform = null;
+                    }
+                    return;
+                }
+            }
+        }
+
         // 任务框鼠标进入事件
         private void TaskBox_MouseEnter(object sender, MouseEventArgs e)
         {
@@ -1435,6 +1463,9 @@ namespace FxxkDDL.Views
                         ShadowDepth = 0,
                         Direction = 0
                     };
+
+                    // 同时高亮拖尾
+                    HighlightTaskTrail(taskInfo, true);
                 }
 
                 // 轻微放大效果
@@ -1467,6 +1498,9 @@ namespace FxxkDDL.Views
                     ShadowDepth = 0,
                     Direction = 0
                 };
+
+                // 同时取消高亮拖尾
+                HighlightTaskTrail(taskInfo, false);
 
                 // 恢复原始大小
                 taskBox.RenderTransform = null;
